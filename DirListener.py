@@ -1,4 +1,17 @@
-import os, time, shutil, datetime, csv
+import os, time, shutil, datetime, csv, logging #, pypyodbc
+
+#Logging basics
+logging.basicConfig(filename="DirectoryListener.log", level=logging.DEBUG)
+
+
+##Test SQL connection
+##ConnectionString = 'Driver={SQL Server Native Client 11.0};Server=<EE-L-7001309\MARTINTESTER>;Database=<Testers>;Uid=<DirectoryListener>;Pwd=<DIR>;'
+##DbConnection = pypyodbc.connect(ConnectionString)
+##DbQuery = 'SELECT [ID],[SerialNumber],[Line] FROM [Testers].[dbo].[SAP_Products]'
+##ConnectionCursor = DbConnection.cursor()
+##ConnectionCursor.execute(DbQuery)
+##ConnectionCursor.close()
+##DbConnection.close()
 
 #Import listdir module
 from os import listdir
@@ -8,7 +21,7 @@ SourcePath = "C:\Python\\"
 
 #Current year for DestPath
 CurrentYear= datetime.datetime.now().strftime("%Y")
-DestPath = "C:\Python\Archive\\" + CurrentYear + "\\"
+DestPath = "C:\Python\Archive\\" + CurrentYear + "\\"   #This will be later moved to #Move file to archive
 
 
 #Dictionary from last check
@@ -22,19 +35,20 @@ while 1:
     for SapFile in Added:
 
         #Read the file and assign to variables
-        SerialNumber = []
-        Text1 = []
+        SerialNumber = []   #Get SerialNumber from .sap file
         SapFileSource = os.path.join(SourcePath, SapFile)
         SapFileRead = open(SapFileSource, 'r')
         SapFileContent = csv.reader(SapFileRead, delimiter ='\t')   #SapFileRead.read()
+
+        #Append SerialNumber from .sap file
         for row in SapFileContent:
             SerialNumber.append(row[0])
-            Text1.append(row[1])
+        ContentLength = len(row)
         SapFileRead.close()
-        print (SerialNumber, Text1)
+        print (ContentLength, SerialNumber)
         #Move file to archive
         shutil.move(os.path.join(SourcePath, SapFile), DestPath)
-        print (SapFile + " was moved to " + DestPath)
+        logging.debug(SapFile + " was moved to " + DestPath)
 
 #Print path file list
 #for Object in DirObject:
