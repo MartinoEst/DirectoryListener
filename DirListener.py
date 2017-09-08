@@ -1,4 +1,4 @@
-import os, time, shutil, datetime
+import os, time, shutil, datetime, csv
 
 #Import listdir module
 from os import listdir
@@ -21,12 +21,17 @@ while 1:
 
     for SapFile in Added:
 
-        #Read the file
+        #Read the file and assign to variables
+        SerialNumber = []
+        Text1 = []
         SapFileSource = os.path.join(SourcePath, SapFile)
         SapFileRead = open(SapFileSource, 'r')
-        SapFileContent = SapFileRead.read()
+        SapFileContent = csv.reader(SapFileRead, delimiter ='\t')   #SapFileRead.read()
+        for row in SapFileContent:
+            SerialNumber.append(row[0])
+            Text1.append(row[1])
         SapFileRead.close()
-        print (SapFileContent)
+        print (SerialNumber, Text1)
         #Move file to archive
         shutil.move(os.path.join(SourcePath, SapFile), DestPath)
         print (SapFile + " was moved to " + DestPath)
