@@ -19,10 +19,17 @@ while 1:
     Added = [DirObject for DirObject in After if not DirObject in DirMemory]
     DirMemory = After
 
-    #Move file to archive
-    for ToBeMoved in Added:
-        shutil.move(os.path.join(SourcePath, ToBeMoved), DestPath)
-        print (ToBeMoved + " was moved to " + DestPath)
+    for SapFile in Added:
+
+        #Read the file
+        SapFileSource = os.path.join(SourcePath, SapFile)
+        SapFileRead = open(SapFileSource, 'r')
+        SapFileContent = SapFileRead.read()
+        SapFileRead.close()
+        print (SapFileContent)
+        #Move file to archive
+        shutil.move(os.path.join(SourcePath, SapFile), DestPath)
+        print (SapFile + " was moved to " + DestPath)
 
 #Print path file list
 #for Object in DirObject:
